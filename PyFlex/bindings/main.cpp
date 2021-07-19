@@ -175,7 +175,7 @@ bool g_shapesChanged = false;
 
 /* Note that this array of colors is altered by demo code, and is also read from global by graphics API impls */
 Colour g_colors[] = {
-        Colour(0.000f, 0.500f, 1.000f),
+        Colour(0.145f, 0.290f, 0.460f),
         Colour(0.875f, 0.782f, 0.051f),
         Colour(0.800f, 0.100f, 0.100f),
         Colour(0.673f, 0.111f, 0.000f),
@@ -1398,7 +1398,7 @@ void RenderScene() {
 
     if (g_drawCloth && g_buffers->triangles.size()) {
         DrawCloth(&g_buffers->positions[0], &g_buffers->normals[0], g_buffers->uvs.size() ? &g_buffers->uvs[0].x : NULL,
-                  &g_buffers->triangles[0], g_buffers->triangles.size() / 3, g_buffers->positions.size(), 3,
+                  &g_buffers->triangles[0], g_buffers->triangles.size() / 3, g_buffers->positions.size(), 0,
                   g_expandCloth);
     }
 
@@ -1457,7 +1457,7 @@ void RenderScene() {
         if (g_drawCloth && g_buffers->triangles.size())
             DrawCloth(&g_buffers->positions[0], &g_buffers->normals[0],
                       g_buffers->uvs.size() ? &g_buffers->uvs[0].x : nullptr, &g_buffers->triangles[0],
-                      g_buffers->triangles.size() / 3, g_buffers->positions.size(), 3, g_expandCloth);
+                      g_buffers->triangles.size() / 3, g_buffers->positions.size(), 0, g_expandCloth);
 
         if (g_drawRopes) {
             for (size_t i = 0; i < g_ropes.size(); ++i)
