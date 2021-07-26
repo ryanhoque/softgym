@@ -1195,8 +1195,8 @@ void DrawCloth(const Vec4* positions, const Vec4* normals, const float* uvs, con
 	}
 #endif
 
-	glColor3fv(g_colors[colorIndex+1]*1.5f);
-	glSecondaryColor3fv(g_colors[colorIndex]*1.5f);
+	glColor3fv(g_colors[colorIndex]);
+	glSecondaryColor3fv(g_colors[colorIndex]);
 
 	glVerify(glBindBuffer(GL_ARRAY_BUFFER, 0));
 	glVerify(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));

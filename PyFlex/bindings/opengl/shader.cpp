@@ -217,8 +217,8 @@ namespace OGL_Renderer
 
 		glBegin(GL_QUADS);
 
-		if (color)
-			glColor3fv(p*0.5f + Vec4(0.5f, 0.5f, 0.5f, 0.5f));
+		// if (color)
+		glColor3fv(Vec4(0.95f, 0.64f, 0.69f, 1.0f));
 
 		float kSize = 200.0f;
 
