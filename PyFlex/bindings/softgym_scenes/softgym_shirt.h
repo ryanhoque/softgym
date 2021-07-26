@@ -1,6 +1,11 @@
 #pragma once
 #include <iostream>
 #include <vector>
+#include <cmath>
+
+inline float DIST(Point3 &a, Point3 &b) {
+    return sqrt(pow(a->x - b->x,2) + pow(a->y - b->y,2) + pow(a->z - b->z,2));
+}
 
 class SoftgymShirt : public Scene
 {
@@ -55,6 +60,11 @@ public:
         float mass = float(ptr[17])/(dimx*dimz);    // avg bath towel is 500-700g
         int flip_mesh = int(ptr[18]); // Flip half
 
+        float stiffness = stretchStiffness;
+        float invMass = 1.0f/mass;
+        Vec3 lower = Vec3(initX, -initY, initZ);
+        Vec3 velocity = 0.0f;
+
         //CreateSpringGrid(Vec3(initX, -initY, initZ), dimx, dimz, 1, radius, phase, stretchStiffness, bendStiffness, shearStiffness, 0.0f, 1.0f/mass);
         Mesh* m = ImportMesh("../../data/tshirt.obj");
         if (!m) 
@@ -65,9 +75,8 @@ public:
 
         cout << "mesh faces:" << m->GetNumFaces() << endl;
 
-        // rotate mesh
-        m->Transform(RotationMatrix(rotation, Vec3(0.0f, 1.0f, 0.0f)));
-        // float scale;
+        // rotate mesh? normalize?
+        // m->Transform(RotationMatrix(rotation, Vec3(0.0f, 1.0f, 0.0f)));
         float avgEdgeLen = 0.;
         //
         for (uint32_t i=0; i < m->GetNumFaces(); ++i)
@@ -84,9 +93,8 @@ public:
             avgEdgeLen += DIST(v0, v1) + DIST(v1, v2) + DIST(v2, v0);
         }
         avgEdgeLen /= 3 * m->GetNumFaces();
-        if (scale < 0){
-            scale = radius / avgEdgeLen;
-        }
+        float scale = radius / avgEdgeLen;
+
         cout<<"Scale:"<<scale<<endl;
 
         Vec3 meshLower, meshUpper;
@@ -110,7 +118,7 @@ public:
         map<uint32_t, uint32_t> indMap;
 
         // to check for duplicate connections
-        map<uint32_t,list<uint32_t> > edgeMap;
+        map<uint32_t,std::list<uint32_t> > edgeMap;
 
         // loop through the faces
         for (uint32_t i=0; i < m->GetNumFaces(); ++i)
@@ -185,7 +193,7 @@ public:
             // connect springs
             
             // add spring if not duplicate
-            list<uint32_t>::iterator it;
+            std::list<uint32_t>::iterator it;
             // for a-b
             if (edgeMap.find(a) == edgeMap.end())
             {
