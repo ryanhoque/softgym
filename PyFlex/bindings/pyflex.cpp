@@ -22,7 +22,8 @@ void pyflex_init(bool headless=false, bool render=true, int camera_width=720, in
         g_pause = false;
     }
 
-    g_scenes.push_back(new SoftgymCloth("Softgym Flag Cloth")); // Ryan: scene_idx = 0 set in cloth_env.py refers to this
+    //g_scenes.push_back(new SoftgymCloth("Softgym Flag Cloth")); // Ryan: scene_idx = 0 set in cloth_env.py refers to this
+    g_scenes.push_back(new SoftgymShirt("Softgym Shirt"));
     g_scenes.push_back(new SoftgymFluid("Softgym Pour Water"));
     g_scenes.push_back(new SoftgymRope("Softgym Rope"));
     g_scenes.push_back(new SoftgymRigidCloth("Softgym Rigid Cloth"));
