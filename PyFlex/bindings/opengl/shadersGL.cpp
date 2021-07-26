@@ -817,6 +817,7 @@ void main()
 		n *= -1.0f;
 	}
 
+	grid = false;
 	if (grid && (n.y >0.995))
 	{
 		color *= 1.0 - 0.25 * checker(vec2(gl_TexCoord[3].x, gl_TexCoord[3].z));
