@@ -849,7 +849,7 @@ void CreateSpringGrid(Vec3 lower, int dx, int dy, int dz, float radius, int phas
 {
 	int baseIndex = int(g_buffers->positions.size());
 
-	for (int z=0; z < dz; ++z)
+	for (int z=0; z < dz; ++z) // Ryan: dz = 1, set in softgym_cloth.h
 	{
 		for (int y=0; y < dy; ++y)
 		{
