@@ -3,8 +3,8 @@
 #include <vector>
 #include <cmath>
 
-inline float DIST(Point3 &a, Point3 &b) {
-    return sqrt(pow(a->x - b->x,2) + pow(a->y - b->y,2) + pow(a->z - b->z,2));
+inline float DIST(Point3& a, Point3& b) {
+    return sqrt(pow(a.x - b.x,2) + pow(a.y - b.y,2) + pow(a.z - b.z,2));
 }
 
 class SoftgymShirt : public Scene
@@ -66,7 +66,7 @@ public:
         Vec3 velocity = 0.0f;
 
         //CreateSpringGrid(Vec3(initX, -initY, initZ), dimx, dimz, 1, radius, phase, stretchStiffness, bendStiffness, shearStiffness, 0.0f, 1.0f/mass);
-        Mesh* m = ImportMesh("../../data/tshirt.obj");
+	Mesh* m = ImportMesh("/home/ryanhoque/softgym/PyFlex/data/tshirt-rotated.obj");
         if (!m) 
         {
             cout << "no mesh" << endl;
@@ -93,7 +93,7 @@ public:
             avgEdgeLen += DIST(v0, v1) + DIST(v1, v2) + DIST(v2, v0);
         }
         avgEdgeLen /= 3 * m->GetNumFaces();
-        float scale = radius / avgEdgeLen;
+        float scale =  radius / avgEdgeLen * 3;
 
         cout<<"Scale:"<<scale<<endl;
 
@@ -118,7 +118,7 @@ public:
         map<uint32_t, uint32_t> indMap;
 
         // to check for duplicate connections
-        map<uint32_t,std::list<uint32_t> > edgeMap;
+        map<uint32_t,vector<uint32_t> > edgeMap;
 
         // loop through the faces
         for (uint32_t i=0; i < m->GetNumFaces(); ++i)
@@ -193,7 +193,7 @@ public:
             // connect springs
             
             // add spring if not duplicate
-            std::list<uint32_t>::iterator it;
+            vector<uint32_t>::iterator it;
             // for a-b
             if (edgeMap.find(a) == edgeMap.end())
             {
