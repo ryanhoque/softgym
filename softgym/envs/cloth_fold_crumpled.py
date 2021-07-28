@@ -31,7 +31,7 @@ class ClothFoldCrumpledEnv(ClothFoldEnv):
             self.action_tool.reset([0., -1., 0.])
             pyflex.step()
 
-            num_particle = cloth_dimx * cloth_dimy
+            num_particle = pyflex.get_positions().reshape(-1,4).shape[0]
             pickpoint = random.randint(0, num_particle - 1)
             curr_pos = pyflex.get_positions()
             original_inv_mass = curr_pos[pickpoint * 4 + 3]
@@ -86,19 +86,19 @@ class ClothFoldCrumpledEnv(ClothFoldEnv):
 
         cloth_dimx = config['ClothSize'][0]
         x_split = cloth_dimx // 2
-        self.fold_group_a = particle_grid_idx[:, :x_split].flatten()
-        self.fold_group_b = np.flip(particle_grid_idx, axis=1)[:, :x_split].flatten()
+        #self.fold_group_a = particle_grid_idx[:, :x_split].flatten()
+        #self.fold_group_b = np.flip(particle_grid_idx, axis=1)[:, :x_split].flatten()
 
         colors = np.zeros(num_particles)
         colors[self.fold_group_a] = 1
 
         pyflex.step()
         self.init_pos = pyflex.get_positions().reshape((-1, 4))[:, :3]
-        pos_a = self.init_pos[self.fold_group_a, :]
-        pos_b = self.init_pos[self.fold_group_b, :]
+        #pos_a = self.init_pos[self.fold_group_a, :]
+        #pos_b = self.init_pos[self.fold_group_b, :]
 
-        self.prev_dist = np.mean(np.linalg.norm(pos_a - pos_b, axis=1))
-
+        #self.prev_dist = np.mean(np.linalg.norm(pos_a - pos_b, axis=1))
+        self.prev_dist = 0
         self.performance_init = None
         info = self._get_info()
         self.performance_init = info['performance']
@@ -113,27 +113,29 @@ class ClothFoldCrumpledEnv(ClothFoldEnv):
         """
         pos = pyflex.get_positions()
         pos = pos.reshape((-1, 4))[:, :3]
-        pos_group_a = pos[self.fold_group_a]
-        pos_group_b = pos[self.fold_group_b]
-        pos_group_b_init = self.flat_pos[self.fold_group_b]
-        curr_dist = np.mean(np.linalg.norm(pos_group_a - pos_group_b, axis=1)) + 1.2 * np.linalg.norm(np.mean(pos_group_b - pos_group_b_init, axis=1))
-        reward = -curr_dist
+        #pos_group_a = pos[self.fold_group_a]
+        #pos_group_b = pos[self.fold_group_b]
+        #pos_group_b_init = self.flat_pos[self.fold_group_b]
+        #curr_dist = np.mean(np.linalg.norm(pos_group_a - pos_group_b, axis=1)) + 1.2 * np.linalg.norm(np.mean(pos_group_b - pos_group_b_init, axis=1))
+        #reward = -curr_dist
+        reward = 0
         return reward
 
     def _get_info(self):
         # Duplicate of the compute reward function!
         pos = pyflex.get_positions()
         pos = pos.reshape((-1, 4))[:, :3]
-        pos_group_a = pos[self.fold_group_a]
-        pos_group_b = pos[self.fold_group_b]
-        pos_group_b_init = self.init_pos[self.fold_group_b]
-        group_dist = np.mean(np.linalg.norm(pos_group_a - pos_group_b, axis=1))
-        fixation_dist = np.mean(np.linalg.norm(pos_group_b - pos_group_b_init, axis=1))
-        performance = -group_dist - 1.2 * fixation_dist
+        #pos_group_a = pos[self.fold_group_a]
+        #pos_group_b = pos[self.fold_group_b]
+        #pos_group_b_init = self.init_pos[self.fold_group_b]
+        #group_dist = np.mean(np.linalg.norm(pos_group_a - pos_group_b, axis=1))
+        #fixation_dist = np.mean(np.linalg.norm(pos_group_b - pos_group_b_init, axis=1))
+        #performance = -group_dist - 1.2 * fixation_dist
+        performance = 1.
         performance_init = performance if self.performance_init is None else self.performance_init  # Use the original performance
         return {
             'performance': performance,
             'normalized_performance': (performance - performance_init) / (0. - performance_init),
-            'neg_group_dist': -group_dist,
-            'neg_fixation_dist': -fixation_dist
+            #'neg_group_dist': -group_dist,
+            #'neg_fixation_dist': -fixation_dist
         }

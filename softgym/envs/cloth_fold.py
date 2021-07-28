@@ -86,8 +86,9 @@ class ClothFoldEnv(ClothEnv):
         """ Right now only use one initial state. Need to make sure _reset always give the same result. Otherwise CEM will fail."""
         if hasattr(self, 'action_tool'):
             particle_pos = pyflex.get_positions().reshape(-1, 4)
-            p1, p2, p3, p4 = self._get_key_point_idx()
-            key_point_pos = particle_pos[(p1, p2), :3] # Was changed from from p1, p4.
+            #p1, p2, p3, p4 = self._get_key_point_idx()
+            #key_point_pos = particle_pos[(p1, p2), :3] # Was changed from from p1, p4.
+            key_point_pos = particle_pos[(0, len(particle_pos)-1), :3]
             middle_point = np.mean(key_point_pos, axis=0)
             self.action_tool.reset([middle_point[0], 0.1, middle_point[2]])
 
@@ -114,9 +115,10 @@ class ClothFoldEnv(ClothEnv):
 
         pyflex.step()
         self.init_pos = pyflex.get_positions().reshape((-1, 4))[:, :3]
-        pos_a = self.init_pos[self.fold_group_a, :]
-        pos_b = self.init_pos[self.fold_group_b, :]
-        self.prev_dist = np.mean(np.linalg.norm(pos_a - pos_b, axis=1))
+        #pos_a = self.init_pos[self.fold_group_a, :]
+        #pos_b = self.init_pos[self.fold_group_b, :]
+        #self.prev_dist = np.mean(np.linalg.norm(pos_a - pos_b, axis=1))
+        self.prev_dist = 0
 
         self.performance_init = None
         info = self._get_info()
@@ -139,30 +141,32 @@ class ClothFoldEnv(ClothEnv):
         """
         pos = pyflex.get_positions()
         pos = pos.reshape((-1, 4))[:, :3]
-        pos_group_a = pos[self.fold_group_a]
-        pos_group_b = pos[self.fold_group_b]
-        pos_group_b_init = self.init_pos[self.fold_group_b]
-        curr_dist = np.mean(np.linalg.norm(pos_group_a - pos_group_b, axis=1)) + \
-                    1.2 * np.mean(np.linalg.norm(pos_group_b - pos_group_b_init, axis=1))
-        reward = -curr_dist
+        #pos_group_a = pos[self.fold_group_a]
+        #pos_group_b = pos[self.fold_group_b]
+        #pos_group_b_init = self.init_pos[self.fold_group_b]
+        #curr_dist = np.mean(np.linalg.norm(pos_group_a - pos_group_b, axis=1)) + \
+        #            1.2 * np.mean(np.linalg.norm(pos_group_b - pos_group_b_init, axis=1))
+        #reward = -curr_dist
+        reward = 0
         return reward
 
     def _get_info(self):
         # Duplicate of the compute reward function!
         pos = pyflex.get_positions()
         pos = pos.reshape((-1, 4))[:, :3]
-        pos_group_a = pos[self.fold_group_a]
-        pos_group_b = pos[self.fold_group_b]
-        pos_group_b_init = self.init_pos[self.fold_group_b]
-        group_dist = np.mean(np.linalg.norm(pos_group_a - pos_group_b, axis=1))
-        fixation_dist = np.mean(np.linalg.norm(pos_group_b - pos_group_b_init, axis=1))
-        performance = -group_dist - 1.2 * fixation_dist
+        #pos_group_a = pos[self.fold_group_a]
+        #pos_group_b = pos[self.fold_group_b]
+        #pos_group_b_init = self.init_pos[self.fold_group_b]
+        #group_dist = np.mean(np.linalg.norm(pos_group_a - pos_group_b, axis=1))
+        #fixation_dist = np.mean(np.linalg.norm(pos_group_b - pos_group_b_init, axis=1))
+        #performance = -group_dist - 1.2 * fixation_dist
+        performance = 1
         performance_init = performance if self.performance_init is None else self.performance_init  # Use the original performance
         info = {
             'performance': performance,
             'normalized_performance': (performance - performance_init) / (0. - performance_init),
-            'neg_group_dist': -group_dist,
-            'neg_fixation_dist': -fixation_dist
+            #'neg_group_dist': -group_dist,
+            #'neg_fixation_dist': -fixation_dist
         }
         if 'qpg' in self.action_mode:
             info['total_steps'] = self.action_tool.total_steps

@@ -57,10 +57,10 @@ public:
         float bendStiffness = ptr[6]; //1.0f;
         float shearStiffness = ptr[7]; //0.9f;
         int phase = NvFlexMakePhase(0, eNvFlexPhaseSelfCollide | eNvFlexPhaseSelfCollideFilter);
-        float mass = float(ptr[17])/(dimx*dimz);    // avg bath towel is 500-700g
+        float mass = float(ptr[17])/6544;    // avg bath towel is 500-700g
         int flip_mesh = int(ptr[18]); // Flip half
 
-        float stiffness = stretchStiffness;
+        float stiffness = 0.08;
         float invMass = 1.0f/mass;
         Vec3 lower = Vec3(initX, -initY, initZ);
         Vec3 velocity = 0.0f;
@@ -93,7 +93,7 @@ public:
             avgEdgeLen += DIST(v0, v1) + DIST(v1, v2) + DIST(v2, v0);
         }
         avgEdgeLen /= 3 * m->GetNumFaces();
-        float scale =  radius / avgEdgeLen * 3;
+        float scale =  radius / avgEdgeLen * 2.5;
 
         cout<<"Scale:"<<scale<<endl;
 
